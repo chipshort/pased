@@ -43,7 +43,6 @@ impl Position {
             Position::Line(line) | Position::LineColumn(line, _) => Position::Line(line + lines),
         };
 
-        // TODO: check if the end is past the end of the file?
         (start, end)
     }
 

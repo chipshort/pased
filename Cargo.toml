@@ -1,0 +1,11 @@
+[package]
+name = "pased"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+clap = { version = "4.5.16", features = ["derive"] }
+derive_more = { version = "1.0.0", features = ["display"] }
+eyre = "0.6.12"
+itertools = "0.13.0"
+regex = "1.10.6"

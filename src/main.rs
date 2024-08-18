@@ -4,7 +4,7 @@ use std::{
     path::PathBuf,
 };
 
-use clap::{Parser, ValueEnum};
+use clap::{ArgGroup, Parser, ValueEnum};
 use derive_more::derive::Display;
 use eyre::{Context, Result};
 use itertools::Itertools;
@@ -59,13 +59,14 @@ pub enum RustLevel {
 
 impl RustLevel {
     pub fn matches(&self, line: &str) -> bool {
-        let has_keyword = match self {
-            RustLevel::All => line.starts_with("warning: ") || line.starts_with("error: "),
-            RustLevel::Warning => line.starts_with("warning: "),
-            RustLevel::Error => line.starts_with("error: "),
-        };
-
-        has_keyword && !(line.contains("generated") && line.contains("cargo fix"))
+        match self {
+            RustLevel::All => RustLevel::Warning.matches(line) || RustLevel::Error.matches(line),
+            RustLevel::Warning => {
+                line.starts_with("warning: ")
+                    && !(line.contains("generated") && line.contains("cargo fix"))
+            }
+            RustLevel::Error => line.starts_with("error["),
+        }
     }
 }
 

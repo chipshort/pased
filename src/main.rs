@@ -16,10 +16,13 @@ mod position_matcher;
 mod positional_replacer;
 
 /// Replace all occurrences of a regex with a string.
-///
-/// To provide positions
 #[derive(Parser)]
 #[command(version, about, long_about = None)]
+#[clap(group(
+    ArgGroup::new("position_matcher")
+        .required(true)
+        .args(&["rust", "position_regex"]),
+))]
 struct Cli {
     /// Regex to search for
     search: String,
@@ -40,7 +43,8 @@ struct Cli {
     #[arg(short, long, default_value = "all", conflicts_with = "position_regex")]
     rust: Option<RustLevel>,
 
-    /// A regex to match the file positions. This expects the file path to be in the first capture group.
+    /// A regex to match the file positions.
+    /// This expects the file path to be in the first capture group, the line number in the second and the column in the third.
     #[arg(short, long, conflicts_with = "rust")]
     position_regex: Option<String>,
 }

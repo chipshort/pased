@@ -2,7 +2,7 @@ use std::ops::Range;
 
 use regex::Replacer;
 
-use crate::position_matcher::{BytePosition, StrExt};
+use crate::{position::BytePosition, str_ext::StrExt};
 
 pub struct RangeSet {
     ranges: Vec<Range<BytePosition>>,

@@ -6,14 +6,17 @@ use std::{
 
 use clap::{ArgGroup, Parser, ValueEnum};
 use derive_more::derive::Display;
-use eyre::{Context, Result};
+use eyre::{eyre, Context, Result};
 use itertools::Itertools;
-use position_matcher::{Position, PositionMatcher, RegexPositionMatcher, RustPositionMatcher};
+use position::Position;
+use position_matcher::{PositionMatcher, RegexPositionMatcher, RustPositionMatcher};
 use positional_replacer::{PositionalReplacer, RangeSet};
 use regex::Regex;
 
+mod position;
 mod position_matcher;
 mod positional_replacer;
+mod str_ext;
 
 /// Replace all occurrences of a regex with a string.
 #[derive(Parser)]
@@ -101,7 +104,8 @@ fn replace_all(
     // iterate through positions
     for (path, positions) in positions {
         // read the file
-        let file = std::fs::read_to_string(&path)?;
+        let file = std::fs::read_to_string(&path)
+            .wrap_err_with(|| eyre!("failed to read file {}", path.to_string_lossy()))?;
 
         // create a RangeSet from the positions
         let ranges = RangeSet::new(
